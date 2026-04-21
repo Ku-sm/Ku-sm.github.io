@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Note | Sungmo Ku</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="note.css" />
+  <script src="../components.js" defer></script>
+</head>
+<body>
+
+  <site-nav base="../" active="notes"></site-nav>
+
+  <div class="note-layout container">
+    <article class="note-body" id="noteBody">
+      <div class="note-meta">
+        <a href="." class="back-link">← Notes</a>
+      </div>
+      <div id="noteContent">
+        <p class="loading">Loading...</p>
+      </div>
+    </article>
+
+    <aside class="note-sidebar">
+      <p class="sidebar-label">On this page</p>
+      <ul id="tocList"></ul>
+    </aside>
+  </div>
+
+  <site-footer></site-footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const file   = params.get('file');
+
+    if (!file) {
+      document.getElementById('noteContent').innerHTML =
+        '<p style="color:var(--text-muted)">No file specified.</p>';
+    } else {
+      fetch(file + '.md')
+        .then(r => {
+          if (!r.ok) throw new Error('Not found');
+          return r.text();
+        })
+        .then(md => {
+          const html = marked.parse(md);
+          document.getElementById('noteContent').innerHTML = html;
+
+          // Set page title from first h1
+          const h1 = document.querySelector('#noteContent h1');
+          if (h1) document.title = h1.textContent + ' | Notes';
+
+          // Build TOC from h2 headings
+          const toc  = document.getElementById('tocList');
+          document.querySelectorAll('#noteContent h2').forEach(h => {
+            const id = h.textContent.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+            h.id = id;
+            const li = document.createElement('li');
+            li.innerHTML = `<a href="#${id}">${h.textContent}</a>`;
+            toc.appendChild(li);
+          });
+        })
+        .catch(() => {
+          document.getElementById('noteContent').innerHTML =
+            '<p style="color:var(--text-muted)">Note not found.</p>';
+        });
+    }
+  </script>
+
+</body>
+</html>

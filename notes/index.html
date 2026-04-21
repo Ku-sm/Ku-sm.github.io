@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notes | Sungmo Ku</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="../components.js" defer></script>
+</head>
+<body>
+
+  <site-nav base="../" active="notes"></site-nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <h1>Notes</h1>
+      <p>Study notes and summaries on autonomous driving simulation topics.</p>
+    </div>
+  </div>
+
+  <div class="layout container">
+
+    <!-- Sidebar: topic filter -->
+    <aside class="sidebar">
+      <p class="sidebar-label">Topics</p>
+      <ul class="topic-list">
+        <li><button class="topic-btn active" data-topic="all">All</button></li>
+        <li><button class="topic-btn" data-topic="openscenario">OpenSCENARIO</button></li>
+        <li><button class="topic-btn" data-topic="opendrive">OpenDRIVE</button></li>
+        <li><button class="topic-btn" data-topic="carla">CARLA</button></li>
+        <li><button class="topic-btn" data-topic="autoware">Autoware</button></li>
+        <li><button class="topic-btn" data-topic="standards">Standards</button></li>
+      </ul>
+    </aside>
+
+    <!-- Note cards -->
+    <main class="note-grid" id="noteGrid">
+
+      <a class="note-card" href="note.html?file=openscenario-structure" data-topic="openscenario">
+        <div class="note-card-top">
+          <span class="note-topic openscenario">OpenSCENARIO</span>
+          <span class="note-date">2026-01</span>
+        </div>
+        <h2>OpenSCENARIO File Structure</h2>
+        <p>Overview of the XML hierarchy: FileHeader, ParameterDeclarations, RoadNetwork, Entities, Storyboard, and how Acts and Events are composed.</p>
+      </a>
+
+      <a class="note-card" href="note.html?file=lateral-acceleration" data-topic="openscenario">
+        <div class="note-card-top">
+          <span class="note-topic openscenario">OpenSCENARIO</span>
+          <span class="note-date">2026-01</span>
+        </div>
+        <h2>Lateral Acceleration as a Maneuver Classifier</h2>
+        <p>How lateral acceleration patterns can distinguish straight driving, lane changes, turns, roundabouts, and U-turns in simulation trajectories.</p>
+      </a>
+
+      <!-- <a class="note-card" href="note.html?file=iso-26262-sotif" data-topic="standards">
+        <div class="note-card-top">
+          <span class="note-topic standards">Standards</span>
+          <span class="note-date">2025-12</span>
+        </div>
+        <h2>ISO 26262 vs ISO 21448 (SOTIF)</h2>
+        <p>Key differences between functional safety (ISO 26262) and safety of intended functionality (SOTIF), and how each applies to ADS validation.</p>
+      </a> -->
+
+      <!-- <a class="note-card" href="note.html?file=pegasus-layers" data-topic="standards">
+        <div class="note-card-top">
+          <span class="note-topic standards">Standards</span>
+          <span class="note-date">2025-11</span>
+        </div>
+        <h2>PEGASUS Scenario Layering Framework</h2>
+        <p>The 6-layer model (Road, Traffic Signs, Objects, Temporary Modifications, Environment, Digital) for hierarchical scenario classification.</p>
+      </a> -->
+
+      <!-- <a class="note-card" href="note.html?file=carla-basics" data-topic="carla">
+        <div class="note-card-top">
+          <span class="note-topic carla">CARLA</span>
+          <span class="note-date">2025-10</span>
+        </div>
+        <h2>CARLA Simulation Basics</h2>
+        <p>Server-client architecture, world and map loading, actor spawning, sensors, and how to interface CARLA with Python scripts.</p>
+      </a>
+
+      <a class="note-card" href="note.html?file=opendrive-road-model" data-topic="opendrive">
+        <div class="note-card-top">
+          <span class="note-topic opendrive">OpenDRIVE</span>
+          <span class="note-date">2025-09</span>
+        </div>
+        <h2>OpenDRIVE Road Geometry Model</h2>
+        <p>Road reference lines, lane sections, geometries (line, arc, spiral), and how to define junctions and road links in .xodr files.</p>
+      </a> -->
+
+    </main>
+  </div>
+
+  <site-footer></site-footer>
+
+  <script>
+    const buttons = document.querySelectorAll('.topic-btn');
+    const cards   = document.querySelectorAll('.note-card');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const topic = btn.dataset.topic;
+        cards.forEach(card => {
+          card.style.display =
+            (topic === 'all' || card.dataset.topic === topic) ? '' : 'none';
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
