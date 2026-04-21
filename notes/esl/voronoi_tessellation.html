@@ -1,0 +1,223 @@
+
+<style>
+  canvas { display: block; width: 100%; border-radius: 8px; cursor: crosshair; }
+  .ctrl {
+    display: flex; gap: 10px; align-items: center;
+    margin: 8px 0 4px; flex-wrap: wrap;
+    font-size: 13px; color: #8b949e;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  button {
+    font-size: 12px; padding: 4px 12px;
+    background: #161b22; color: #e6edf3;
+    border: 1px solid #30363d; border-radius: 6px;
+    cursor: pointer; transition: border-color 0.2s;
+  }
+  button:hover { border-color: #58a6ff; color: #58a6ff; }
+  label { color: #8b949e; cursor: pointer; }
+  input[type="checkbox"] { accent-color: #58a6ff; cursor: pointer; }
+  .tip { font-size: 12px; color: #8b949e; margin-top: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+</style>
+<canvas id="vc" height="360"></canvas>
+<div class="ctrl">
+  <button onclick="randomize()">Randomize</button>
+  <button onclick="clearAll()">Reset</button>
+  <label><input type="checkbox" id="showDel" onchange="draw()"> Show Delaunay triangulation</label>
+  <label><input type="checkbox" id="showCircle" onchange="draw()"> Show circumcircles</label>
+</div>
+<div class="tip">Click on the canvas to add points</div>
+
+<script>
+const canvas = document.getElementById('vc');
+let pts = [];
+let W, H;
+
+function resize() {
+  W = canvas.offsetWidth;
+  H = 360;
+  canvas.width = W;
+  canvas.height = H;
+}
+
+function dist(a, b) {
+  return Math.hypot(a[0]-b[0], a[1]-b[1]);
+}
+
+function circumcircle(a, b, c) {
+  const ax = a[0], ay = a[1];
+  const bx = b[0], by = b[1];
+  const cx = c[0], cy = c[1];
+  const D = 2*(ax*(by-cy)+bx*(cy-ay)+cx*(ay-by));
+  if (Math.abs(D) < 1e-10) return null;
+  const ux = ((ax*ax+ay*ay)*(by-cy)+(bx*bx+by*by)*(cy-ay)+(cx*cx+cy*cy)*(ay-by))/D;
+  const uy = ((ax*ax+ay*ay)*(cx-bx)+(bx*bx+by*by)*(ax-cx)+(cx*cx+cy*cy)*(bx-ax))/D;
+  return { x: ux, y: uy, r: Math.hypot(ax-ux, ay-uy) };
+}
+
+function delaunay(points) {
+  if (points.length < 3) return [];
+  const M = 1e6;
+  const sup = [[-M, -M], [M, -M], [0, M*2]];
+  const all = [...points, ...sup];
+  const n = points.length;
+  let tris = [[n, n+1, n+2]];
+
+  for (let pi = 0; pi < n; pi++) {
+    const p = all[pi];
+    let edges = [];
+    tris = tris.filter(t => {
+      const cc = circumcircle(all[t[0]], all[t[1]], all[t[2]]);
+      if (!cc) return true;
+      if (dist([cc.x, cc.y], p) < cc.r - 1e-10) {
+        edges.push([t[0],t[1]], [t[1],t[2]], [t[2],t[0]]);
+        return false;
+      }
+      return true;
+    });
+    const uniq = edges.filter(e =>
+      !edges.some(f => f !== e && ((f[0]===e[1]&&f[1]===e[0])||(f[0]===e[0]&&f[1]===e[1])))
+    );
+    uniq.forEach(e => tris.push([e[0], e[1], pi]));
+  }
+  return tris.filter(t => t.every(i => i < n));
+}
+
+// Clip a ray (ox,oy) + t*(dx,dy), t>=0 to canvas bounds, returns endpoint or null
+function rayClip(ox, oy, dx, dy) {
+  let tMax = Infinity;
+  if (dx > 0) tMax = Math.min(tMax, (W - ox) / dx);
+  else if (dx < 0) tMax = Math.min(tMax, (0 - ox) / dx);
+  if (dy > 0) tMax = Math.min(tMax, (H - oy) / dy);
+  else if (dy < 0) tMax = Math.min(tMax, (0 - oy) / dy);
+  if (!isFinite(tMax) || tMax < 0) return null;
+  return [ox + dx * tMax, oy + dy * tMax];
+}
+
+function voronoiEdges(points, tris) {
+  const edges = [];
+  const adj   = {};
+
+  tris.forEach((t, ti) => {
+    [[0,1],[1,2],[2,0]].forEach(([a, b]) => {
+      const key = [t[a], t[b]].sort().join('-');
+      if (!adj[key]) adj[key] = { tris: [], raw: [t[a], t[b]] };
+      adj[key].tris.push(ti);
+    });
+  });
+
+  Object.values(adj).forEach(({ tris: pair, raw: [i, j] }) => {
+    if (pair.length === 2) {
+      // Internal edge — connect the two circumcenters
+      const c1 = circumcircle(points[tris[pair[0]][0]], points[tris[pair[0]][1]], points[tris[pair[0]][2]]);
+      const c2 = circumcircle(points[tris[pair[1]][0]], points[tris[pair[1]][1]], points[tris[pair[1]][2]]);
+      if (c1 && c2) edges.push([[c1.x, c1.y], [c2.x, c2.y]]);
+
+    } else if (pair.length === 1) {
+      // Boundary edge — ray from circumcenter toward canvas boundary
+      const t   = tris[pair[0]];
+      const cc  = circumcircle(points[t[0]], points[t[1]], points[t[2]]);
+      if (!cc) return;
+
+      // Third vertex (not on this shared edge)
+      const k  = t.find(v => v !== i && v !== j);
+      const pi = points[i], pj = points[j], pk = points[k];
+
+      // Direction perpendicular to edge i→j
+      const ex = pj[0] - pi[0], ey = pj[1] - pi[1];
+      let dx = -ey, dy = ex;
+
+      // Ensure direction points away from the interior (opposite side from pk)
+      const dot = (pk[0] - cc.x) * dx + (pk[1] - cc.y) * dy;
+      if (dot > 0) { dx = -dx; dy = -dy; }
+
+      const far = rayClip(cc.x, cc.y, dx, dy);
+      if (far) edges.push([[cc.x, cc.y], far]);
+    }
+  });
+
+  return edges;
+}
+
+function draw() {
+  resize();
+  const ctx = canvas.getContext('2d');
+  const bg      = '#161b22';
+  const ptCol   = '#58a6ff';
+  const voroCol = '#8b949e';
+  const delCol  = 'rgba(63,185,80,0.35)';
+  const circCol = 'rgba(210,153,34,0.35)';
+
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  if (pts.length < 2) {
+    ctx.fillStyle = '#8b949e';
+    ctx.font = '14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Click to add 3 or more points', W/2, H/2);
+    pts.forEach(p => {
+      ctx.beginPath(); ctx.arc(p[0],p[1],5,0,Math.PI*2);
+      ctx.fillStyle = ptCol; ctx.fill();
+    });
+    return;
+  }
+
+  const tris = delaunay(pts);
+
+  if (document.getElementById('showDel').checked) {
+    ctx.strokeStyle = delCol; ctx.lineWidth = 1.2;
+    tris.forEach(t => {
+      ctx.beginPath();
+      ctx.moveTo(pts[t[0]][0], pts[t[0]][1]);
+      ctx.lineTo(pts[t[1]][0], pts[t[1]][1]);
+      ctx.lineTo(pts[t[2]][0], pts[t[2]][1]);
+      ctx.closePath(); ctx.stroke();
+    });
+  }
+
+  if (document.getElementById('showCircle').checked) {
+    tris.forEach(t => {
+      const cc = circumcircle(pts[t[0]], pts[t[1]], pts[t[2]]);
+      if (!cc) return;
+      ctx.beginPath(); ctx.arc(cc.x, cc.y, cc.r, 0, Math.PI*2);
+      ctx.strokeStyle = circCol; ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.beginPath(); ctx.arc(cc.x, cc.y, 3, 0, Math.PI*2);
+      ctx.fillStyle = '#d29922'; ctx.fill();
+    });
+  }
+
+  const vedges = voronoiEdges(pts, tris);
+  ctx.strokeStyle = voroCol; ctx.lineWidth = 1.8;
+  vedges.forEach(([a, b]) => {
+    ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
+  });
+
+  pts.forEach((p, i) => {
+    ctx.beginPath(); ctx.arc(p[0],p[1],6,0,Math.PI*2);
+    ctx.fillStyle = ptCol; ctx.fill();
+    ctx.strokeStyle = '#0d1117'; ctx.lineWidth = 1.5; ctx.stroke();
+  });
+}
+
+function randomize() {
+  pts = [];
+  const n = 12 + Math.floor(Math.random()*8);
+  for (let i = 0; i < n; i++) {
+    pts.push([40 + Math.random()*(W-80), 40 + Math.random()*(H-80)]);
+  }
+  draw();
+}
+
+canvas.addEventListener('click', e => {
+  const r = canvas.getBoundingClientRect();
+  const sx = W / canvas.offsetWidth;
+  pts.push([(e.clientX - r.left)*sx, (e.clientY - r.top)*(H/canvas.offsetHeight)]);
+  draw();
+});
+
+resize();
+randomize();
+window.addEventListener('resize', draw);
+</script>

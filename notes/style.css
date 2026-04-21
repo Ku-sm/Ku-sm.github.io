@@ -18,6 +18,7 @@
   --c-carla:        #f78166;
   --c-autoware:     #d2a8ff;
   --c-standards:    #d29922;
+  --c-book:         #a5d6ff;
 }
 
 html { scroll-behavior: smooth; }
@@ -196,6 +197,7 @@ nav a:hover, nav a.active { color: var(--text); }
 .note-topic.carla        { background: rgba(247,129,102,0.12);color: var(--c-carla);        border: 1px solid rgba(247,129,102,0.3); }
 .note-topic.autoware     { background: rgba(210,168,255,0.12);color: var(--c-autoware);     border: 1px solid rgba(210,168,255,0.3); }
 .note-topic.standards    { background: rgba(210,153,34,0.12); color: var(--c-standards);    border: 1px solid rgba(210,153,34,0.3); }
+.note-topic.book         { background: rgba(165,214,255,0.12); color: var(--c-book);         border: 1px solid rgba(165,214,255,0.3); }
 
 .note-date {
   font-size: 0.78rem;

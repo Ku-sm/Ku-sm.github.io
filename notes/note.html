@@ -6,6 +6,7 @@
   <title>Note | Sungmo Ku</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="note.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
   <script src="../components.js" defer></script>
 </head>
 <body>
@@ -31,6 +32,8 @@
   <site-footer></site-footer>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const file   = params.get('file');
@@ -45,15 +48,34 @@
           return r.text();
         })
         .then(md => {
-          const html = marked.parse(md);
+          // Protect math blocks from marked before parsing
+          const blocks = [];
+          const protected_md = md
+            .replace(/\$\$[\s\S]*?\$\$/g, m => { blocks.push(m); return `@@MATH${blocks.length-1}@@`; })
+            .replace(/\$[^\$\n]+?\$/g,    m => { blocks.push(m); return `@@MATH${blocks.length-1}@@`; });
+
+          let html = marked.parse(protected_md);
+
+          // Restore math blocks
+          html = html.replace(/@@MATH(\d+)@@/g, (_, i) => blocks[i]);
+
           document.getElementById('noteContent').innerHTML = html;
+
+          // Render math with KaTeX
+          renderMathInElement(document.getElementById('noteContent'), {
+            delimiters: [
+              { left: '$$', right: '$$', display: true },
+              { left: '$',  right: '$',  display: false }
+            ],
+            throwOnError: false
+          });
 
           // Set page title from first h1
           const h1 = document.querySelector('#noteContent h1');
           if (h1) document.title = h1.textContent + ' | Notes';
 
           // Build TOC from h2 headings
-          const toc  = document.getElementById('tocList');
+          const toc = document.getElementById('tocList');
           document.querySelectorAll('#noteContent h2').forEach(h => {
             const id = h.textContent.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
             h.id = id;
