@@ -20,7 +20,7 @@
 
   <main class="container">
 
-    <!-- Paper 1 -->
+    <!-- 2026 -->
     <article class="paper">
       <div class="paper-header">
         <span class="paper-type journal">Journal Article</span>
@@ -38,12 +38,13 @@
       </p>
 
       <div class="paper-tags">
-        <span>OpenSCENARIO</span>
-        <span>Trajectory Classification</span>
-        <span>Rule-Based</span>
+        <span>Driving Trajectory Classification</span>
+        <span>Rule-based Scenario Classification</span>
+        <span>Scenario Generation</span>
+        <span>Autonomous Driving Test</span>
         <span>ISO 26262</span>
         <span>ISO 21448 (SOTIF)</span>
-        <span>CARLA</span>
+        <span>OpenSCENARIO</span>
       </div>
 
       <div class="abstract">
@@ -55,21 +56,16 @@
             the nondeterministic nature of actual traffic environments makes physical testing costly
             and limited in scope, particularly for rare and safety-critical scenarios. To address this,
             simulation has become a core component in validation by providing scalable, controllable,
-            and repeatable testing environments.
-          </p>
-          <p>
-            This study proposes a trajectory-based scenario classification framework that emphasizes
-            both generality and interpretability. Specifically, we define a set of rule-based maneuver
-            classification criteria using lateral acceleration patterns and apply them to simulated urban
-            driving scenarios modeled with OpenSCENARIO. To address overlapping maneuver characteristics,
-            a priority ordering of classification rules is introduced to resolve ambiguities.
-          </p>
-          <p>
-            The proposed method was evaluated on a dataset comprising 7 types of maneuvers, including
-            straight driving, lane changes, turns, roundabouts, and U-turns. Experimental results
-            demonstrate the effectiveness of rule-driven classification based on vehicle trajectory dynamics
-            and highlight the potential of this approach for structured scenario definition and validation
-            in ADS simulation environments.
+            and repeatable testing environments. This study proposes a trajectory-based scenario classification
+            framework that emphasizes both generality and interpretability. Specifically, we
+            define a set of rule-based maneuver classification criteria using lateral acceleration patterns
+            and apply them to simulated urban driving scenarios modeled with OpenSCENARIO. To
+            address overlapping maneuver characteristics, a priority ordering of classification rules is
+            introduced to resolve ambiguities. The proposed method was evaluated on a dataset comprising
+            7 types of maneuvers, including straight driving, lane changes, turns, roundabouts,
+            and U-turns. Experimental results demonstrate the effectiveness of rule-driven classification
+            based on vehicle trajectory dynamics and highlight the potential of this approach for
+            structured scenario definition and validation in ADS simulation environments.
           </p>
         </div>
       </div>
@@ -97,47 +93,26 @@
 
     <hr class="divider" />
 
-    <!-- Paper 2 -->
+    <!-- 2025 - Methodology -->
     <article class="paper">
       <div class="paper-header">
         <span class="paper-type conference">Conference Paper</span>
+        <span class="paper-year">2025</span>
       </div>
       <h2 class="paper-title">
         Methodology of Disturbance-Based Scenario Classification in Simulation Environments
       </h2>
       <p class="paper-authors">Sungmo Ku, Jinho Lee</p>
       <p class="paper-venue">
-        Tech University of Korea, Department of Smart Factory Engineering &amp; Department of Computer Engineering
+        <em>한국자동차공학회 추계학술대회 </em> (2025)
       </p>
 
       <div class="paper-tags">
+        <span>Disturbances</span>
+        <span>Scenario Classification</span>
+        <span>Autonomous Driving Simulatior</span>
         <span>OpenSCENARIO</span>
-        <span>Disturbance Classification</span>
         <span>SAE J3016</span>
-        <span>Simulation</span>
-        <span>PEGASUS</span>
-      </div>
-
-      <div class="abstract">
-        <button class="abstract-toggle" onclick="toggleAbstract(this)">Abstract ▾</button>
-        <div class="abstract-body">
-          <p>
-            Autonomous driving systems have advanced toward higher levels of automation, particularly
-            SAE J3016 Level 4 and above, where simulation-based training is increasingly emphasized.
-            Through simulation, diverse driving scenarios can be reproduced, and consequently, various
-            classification frameworks have been proposed. Previous ontology-based approaches that utilize
-            road types and surrounding traffic object information face limitations: difficulty in
-            comprehensively capturing all contextual information and high computational costs.
-          </p>
-          <p>
-            This study proposes a methodology that establishes a concise and clear foundation for
-            classifying driving scenarios. The objective is to define classification criteria that enable
-            the effective reproduction and training of hazardous scenarios, thereby supporting the learning
-            process of autonomous vehicles. Using ASAM OpenX (developed as part of the German PEGASUS Project),
-            disturbances implementable in simulation are classified into three stages: perception,
-            decision-making, and control.
-          </p>
-        </div>
       </div>
 
       <div class="contributions">
@@ -161,12 +136,192 @@
           </li>
         </ul>
       </div>
-
-      <p class="paper-note">
-        Supported by the Technology Innovation Program (RS-2024-00407589) funded by the Ministry of Trade,
-        Industry &amp; Energy (MOTIE, Korea).
-      </p>
     </article>
+
+    <hr class="divider" />
+
+    <!-- 2025 - Disturbance Injection -->
+    <article class="paper">
+      <div class="paper-header">
+        <span class="paper-type conference">Conference Paper</span>
+        <span class="paper-year">2025</span>
+      </div>
+      <h2 class="paper-title">
+        자율주행 시뮬레이션 시나리오의 OpenSCENARIO 기반 외란 주입 알고리즘 연구
+      </h2>
+      <p class="paper-authors">안승찬, 김준권, 구숭모, 이진호</p>
+      <p class="paper-venue">
+        <em>한국컴퓨터정보학회 하계학술대회</em>, 제33권 제2호, pp. 749–750 (2025. 7)
+      </p>
+
+      <div class="paper-tags">
+        <span>Autonomous Driving</span>
+        <span>OpenSCENARIO</span>
+        <span>Disturbance Injection</span>
+        <span>Scenario Testing</span>
+        <span>CARLA</span>
+      </div>
+
+      <div class="contributions">
+        <h3>Key Contributions</h3>
+        <ul>
+          <li>
+            <strong>Standards-based disturbance injection framework</strong> — Defines scenario parsing and
+            disturbance injection rules in accordance with OpenSCENARIO 1.2, establishing a fully standards-compliant pipeline.
+          </li>
+          <li>
+            <strong>Modular disturbance elements</strong> — Implements disturbances (falling objects, stalled vehicles,
+            extreme weather, speed-limit zones) as configurable, self-contained modules for rapid scenario extension.
+          </li>
+          <li>
+            <strong>Simulator validation</strong> — Demonstrates practicality and validity of the proposed method
+            through experiments in a real high-fidelity simulation environment.
+          </li>
+        </ul>
+      </div>
+    </article>
+
+    <hr class="divider" />
+
+    <!-- 2024 - Customer Churn -->
+    <article class="paper">
+      <div class="paper-header">
+        <span class="paper-type conference">Conference Paper</span>
+        <span class="paper-year">2024</span>
+      </div>
+      <h2 class="paper-title">
+        기계학습 알고리즘을 활용한 통신 서비스 제공업체의 고객 이탈 예측
+      </h2>
+      <p class="paper-authors">구숭모, 주하영, 이다현, 김정원, 하다은, 조석헌</p>
+      <p class="paper-venue">
+        <em>한국정보통신학회 추계학술발표대회</em> (2024)
+      </p>
+
+      <div class="paper-tags">
+        <span>Machine Learning</span>
+        <span>Customer Churn</span>
+        <span>Naive Bayes</span>
+        <span>Random Forest</span>
+        <span>Logistic Regression</span>
+        <span>Telecommunication</span>
+      </div>
+
+      <div class="abstract">
+        <button class="abstract-toggle" onclick="toggleAbstract(this)">Abstract ▾</button>
+        <div class="abstract-body">
+          <p>
+              Customer churn prediction is a key factor for business success in the telecommunication service market, since it 
+              can be used to focus only on the customer who is predicted as a churned customer, which leads to retrenchment in 
+              marketing costs. This study employed machine learning algorithms, such as Naive Bayes, Logistic Regression, and 
+              Random Forest, to provide the customer churn prediction models for a telecommunication service provider. The 
+              customer service usage information dataset provided by a telecommunication service provider was used for training 
+              and evaluating the customer churn prediction models. It was observed that the Naive Bayes-based customer churn 
+              prediction model outperformed other two machine learning-based prediction models in terms of Recall, which is the 
+              proportion of actual churned customers who were correctly classified as the churned customers. On the contrary to 
+              this, the Random Forest-based prediction models achieved the best performance regarding other metrics including 
+              F1-score, Specificity, and Accuracy.
+          </p>
+        </div>
+      </div>
+
+      <div class="contributions">
+        <h3>Key Contributions</h3>
+        <ul>
+          <li>
+            <strong>Comparative ML evaluation for churn prediction</strong> — Benchmarks Naive Bayes, Logistic Regression,
+            and Random Forest on a real telecom dataset, revealing trade-offs between Recall and F1/Accuracy across models.
+          </li>
+          <li>
+            <strong>Practical focus on Recall</strong> — Highlights Naive Bayes's superiority in minimizing false negatives,
+            which is critical for catching churned customers before they leave.
+          </li>
+        </ul>
+      </div>
+    </article>
+
+    <hr class="divider" />
+
+    <!-- 2024 - Anomaly Transformer -->
+    <article class="paper">
+      <div class="paper-header">
+        <span class="paper-type conference">Conference Paper</span>
+        <span class="paper-year">2024</span>
+      </div>
+      <h2 class="paper-title">
+        Anomaly Transformer를 활용한 DES 라인 설비의 센서 및 공정데이터 이상탐지
+      </h2>
+      <p class="paper-authors">김도현, 서성발, 구숭모, 배유석</p>
+      <p class="paper-venue">
+        <em>한국생산제조학회 추계학술대회</em> (2024)
+      </p>
+
+      <div class="paper-tags">
+        <span>Anomaly Detection</span>
+        <span>Anomaly Transformer</span>
+        <span>Predictive Maintenance</span>
+        <span>Clusstering</span>
+        <span>DES Manufacturing line</span>
+        <span>Sensor Data</span>
+        <span>Process Data</span>
+      </div>
+
+      <div class="contributions">
+        <h3>Key Contributions</h3>
+        <ul>
+          <li>
+            <strong>Anomaly Transformer 기반 이상 임베딩 분석</strong> — DES 제조 라인 센서/공정 데이터에
+            Anomaly Transformer를 적용하여 Point Anomaly 및 Contextual Anomaly를 탐지.
+          </li>
+          <li>
+            <strong>DBSCAN 기반 이상 구간 분류</strong> — 학습된 임베딩 표현을 DBSCAN 클러스터링에 활용하여
+            이상 의심 구간을 자동 분류.
+          </li>
+        </ul>
+      </div>
+
+    </article>
+
+    <hr class="divider" />
+
+    <!-- 2023 - PCB -->
+    <article class="paper">
+      <div class="paper-header">
+        <span class="paper-type conference">Conference Paper</span>
+        <span class="paper-year">2023</span>
+      </div>
+      <h2 class="paper-title">
+        PCB 표면결함 이미지 데이터셋에서 Auto-labeling을 위한 자기지도학습 기반 이미지 클러스터링 방법에 관한 연구
+      </h2>
+      <p class="paper-authors">서성발, 김도현, 구숭모, 김나연, 김지훈, 배유석</p>
+      <p class="paper-venue">
+        <em>한국생산제조학회 추계학술대회</em> (2023)
+      </p>
+
+      <div class="paper-tags">
+        <span>Image Clustering</span>
+        <span>Auto-labeling</span>
+        <span>Self-Supervised Learning</span>
+        <span>Image Embedding</span>
+        <span>PCB Surface Detection</span>
+      </div>
+
+      <div class="contributions">
+        <h3>Key Contributions</h3>
+        <ul>
+          <li>
+            <strong>자기지도학습 기반 Auto-labeling 파이프라인</strong> — RegNet 기반 이미지 임베딩과 클러스터링을 결합하여
+            수동 라벨링 없이 PCB 표면결함 데이터를 자동 분류.
+          </li>
+          <li>
+            <strong>Grad-CAM 기반 분류 근거 시각화</strong> — 모델이 분류에 활용하는 특징을 시각화하여 결과의
+            해석 가능성을 확보.
+          </li>
+        </ul>
+      </div>
+
+    </article>
+
+    <hr class="divider" />
 
   </main>
 

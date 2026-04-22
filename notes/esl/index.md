@@ -13,6 +13,7 @@ covering the mathematical foundations behind modern machine learning algorithms.
 | Chapter | Title | Notes |
 |---|---|---|
 | 2 | Overview of Supervised Learning | [→ Notes](note.html?file=esl/chapter-02) |
+| 2 | Linear methods for regression | [→ Notes](note.html?file=esl/chapter-03) |
 
 ---
 
